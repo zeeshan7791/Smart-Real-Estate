@@ -3,7 +3,7 @@ const bcryptjs = require("bcryptjs");
 const errorHandler = require("../utils/error");
 const jwt = require("jsonwebtoken");
 const signUp = async (req, res, next) => {
-  const { username, email, password } = req.body;
+  const { username, email, password, avatar } = req.body;
   console.log(req.body);
   try {
     const existingUser = await User.findOne({ $or: [{ email }, { username }] });
@@ -18,8 +18,14 @@ const signUp = async (req, res, next) => {
       }
     }
     const hashedPassword = bcryptjs.hashSync(password, 10);
-    const newUser = new User({ username, email, password: hashedPassword });
+    const newUser = new User({
+      username,
+      email,
+      password: hashedPassword,
+      avatar,
+    });
     await newUser.save();
+    console.log(newUser.avatar);
     res.status(201).json("user creater successfully");
   } catch (error) {
     next(error);
