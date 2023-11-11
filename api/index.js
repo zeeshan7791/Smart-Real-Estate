@@ -6,6 +6,7 @@ const cors = require("cors");
 const connectDB = require("../config/db");
 const userRouter = require("./routes/useroute");
 const authRouter = require("./routes/authRoute");
+const cookieParser = require("cookie-parser");
 dotenv.config();
 connectDB();
 const app = express();
@@ -13,6 +14,7 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 app.use(morgan("dev"));
+app.use(cookieParser());
 // user route
 app.use("/api/user", userRouter);
 app.use("/api/auth", authRouter);
