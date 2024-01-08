@@ -3,8 +3,10 @@ const bcryptjs = require("bcryptjs");
 const errorHandler = require("../utils/error");
 const jwt = require("jsonwebtoken");
 const signUp = async (req, res, next) => {
-  const { username, email, password, avatar } = req.body;
+  const { username, email, password, photo } = req.body;
+  console.log(req.file);
   console.log(req.body);
+  const filename = req.file ? req.file.filename : "";
   try {
     const existingUser = await User.findOne({ $or: [{ email }, { username }] });
     if (existingUser) {
@@ -22,7 +24,7 @@ const signUp = async (req, res, next) => {
       username,
       email,
       password: hashedPassword,
-      avatar,
+      photo: filename,
     });
     await newUser.save();
     console.log(newUser.avatar);
