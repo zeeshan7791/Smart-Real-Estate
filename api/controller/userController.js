@@ -5,23 +5,28 @@ const getUser = async (req, res) => {
   res.send("hey how are you");
 };
 const updateUser = async (req, res, next) => {
-  console.log("hello body");
+  console.log(req.body.password, "Password before ");
+  const photo = req.file ? req.file.filename : "";
   if (req.user.id !== req.params.id)
     return next(errorHandler(401, "You can only update your own account!"));
   try {
-    if (req.body.password) {
-      req.body.password = bcryptjs.hashSync(req.body.password, 10);
+    let updateForm = {
+      username: req.body.username,
+      email: req.body.email,
+    };
+    // Check if password is provided and not empty
+    if (req.body.password !== undefined && req.body.password.trim() !== "") {
+      updateForm.password = bcryptjs.hashSync(req.body.password, 10);
     }
-
+    if (photo) {
+      updateForm.photo = photo;
+    }
+    console.log(req.body.password, "value in password");
+    console.log(updateForm, "value in form");
     const updatedUser = await User.findByIdAndUpdate(
       req.params.id,
       {
-        $set: {
-          username: req.body.username,
-          email: req.body.email,
-          password: req.body.password,
-          avatar: req.body.avatar,
-        },
+        $set: updateForm,
       },
       { new: true }
     );
