@@ -7,6 +7,7 @@ const cors = require("cors");
 const connectDB = require("../config/db");
 const userRouter = require("./routes/useroute");
 const authRouter = require("./routes/authRoute");
+const listingRouter = require("./routes/listingRoute");
 const cookieParser = require("cookie-parser");
 dotenv.config();
 connectDB();
@@ -19,6 +20,7 @@ app.use(cookieParser());
 // user route
 app.use("/api/user", userRouter);
 app.use("/api/auth", authRouter);
+app.use("/api/listing", listingRouter);
 const PORT = process.env.PORT || 5000;
 app.use("/image", express.static(path.join(__dirname, "uploads")));
 app.listen(PORT, () => console.log(`Server started on port ${PORT}`));
