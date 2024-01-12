@@ -14,7 +14,9 @@ const Signup = () => {
       [e.target.id]: e.target.value,
     });
   };
-  // console.log(formData);
+  console.log(inputValues);
+  console.log(photo);
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {

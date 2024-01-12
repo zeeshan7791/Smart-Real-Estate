@@ -2,7 +2,7 @@ const multer = require("multer");
 
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
-    cb(null, "uploads/"); // Make sure 'uploads/' matches the actual path
+    cb(null, "api/uploads/"); // Make sure 'api/uploads/' matches the actual path
   },
   filename: (req, file, cb) => {
     cb(null, file.originalname);
