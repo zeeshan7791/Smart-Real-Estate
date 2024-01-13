@@ -49,13 +49,39 @@ const CreateListing = () => {
       setIsLoading(false);
     }
   };
-  console.log(productPhotos.length, "product photos------");
+  console.log(productPhotos, "product photos------");
+  let pics = [];
+  for (let i = 0; i < productPhotos.length; i++) {
+    pics.push(URL.createObjectURL(productPhotos[i]));
+  }
+  console.log(pics);
+
+  const [currentImage, setCurrentImage] = useState(0);
+
+  const nextImage = () => {
+    setCurrentImage((prevImage) => (prevImage + 1) % pics.length);
+  };
+
+  const prevImage = () => {
+    setCurrentImage((prevImage) =>
+      prevImage === 0 ? pics.length - 1 : prevImage - 1
+    );
+  };
   return (
     <>
       <main className="p-3 max-w-4xl mx-auto">
         <h1 className="text-3xl mt-16 my-7 text-center font-semibold">
           Create a Listing
         </h1>
+        <div className=" m-auto w-2/4 h-96 flex p-2">
+          <button onClick={prevImage}>&lt; Prev</button>
+          <img
+            src={pics[currentImage]}
+            alt={`Slide ${currentImage + 1}`}
+            className="w-96 h-full rounded"
+          />
+          <button onClick={nextImage}>Next &gt;</button>
+        </div>
         <form
           className="flex flex-col sm:flex-row gap-4"
           onSubmit={handleCreateProduct}
