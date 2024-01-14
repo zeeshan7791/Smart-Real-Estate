@@ -15,7 +15,7 @@ const DisplayProducts = () => {
         }
 
         const data = await response.json();
-        console.log(data, "value get listing");
+        // console.log(data, "value get listing");
         setListingData(data.getProductListing);
       } catch (error) {
         console.error("Error fetching data:", error);
@@ -24,10 +24,44 @@ const DisplayProducts = () => {
 
     fetchData();
   }, []);
+  // const imagePoint = `http://localhost:3000/image/`;
+  console.log(listingData[0].pictures.length, "value in listingData");
+  // useEffect(() => {
+  //   if (listingData) {
+  //     let arrEditImage = [];
 
+  //     for (let i = 0; i < listingData[0].pictures.length; i++) {
+  //       arrEditImage.push(imagePoint + listingData.pictures[i]);
+  //     }
+  //   }
+  // }, [listingData]);
+  // let pics = [];
+  // for (let i = 0; i < listingData[0].pictures.length; i++) {
+  //   pics.push(imagePoint + listingData[0].pictures[i]);
+  // }
+  // const [currentImage, setCurrentImage] = useState(0);
+
+  // const nextImage = () => {
+  //   setCurrentImage((prevImage) => (prevImage + 1) % pics.length);
+  // };
+
+  // const prevImage = () => {
+  //   setCurrentImage((prevImage) =>
+  //     prevImage === 0 ? pics.length - 1 : prevImage - 1
+  //   );
+  // };
   return (
     <>
       <div className="border-2 h-fit m-auto flex justify-evenly">
+        <div className=" m-auto w-2/4 h-96 flex p-2">
+          {/* <button onClick={prevImage}>&lt; Prev</button>
+          <img
+            src={pics[currentImage]}
+            alt={`Slide ${currentImage + 1}`}
+            className="w-96 h-full rounded"
+          />
+          <button onClick={nextImage}>Next &gt;</button> */}
+        </div>
         {listingData.map((item) => (
           <div key={item.id} className="  w-64 ">
             <p>
