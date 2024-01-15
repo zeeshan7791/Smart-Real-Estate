@@ -4,12 +4,16 @@ const CreateListing = () => {
   const [inputProductValues, setInputProductValues] = useState({});
   const [productPhotos, setProductPhotos] = useState([]);
   const [isloading, setIsLoading] = useState(false);
+  const [pics, setPics] = useState([]);
+  const [currentImage, setCurrentImage] = useState(0);
+  const [uploadError, setImageUploadError] = useState("");
   const handleChangeProduct = (e) => {
     setInputProductValues({
       ...inputProductValues,
       [e.target.id]: e.target.value,
     });
   };
+
   console.log(inputProductValues, "data in product values");
   const handleCreateProduct = async (e) => {
     e.preventDefault();
@@ -49,15 +53,19 @@ const CreateListing = () => {
       setIsLoading(false);
     }
   };
-  console.log(productPhotos, "product photos------");
-  let pics = [];
-  for (let i = 0; i < productPhotos.length; i++) {
-    pics.push(URL.createObjectURL(productPhotos[i]));
-  }
-  console.log(pics);
+  const handleUploadImages = () => {
+    const imageUrls = Array.from(productPhotos).map((file) =>
+      URL.createObjectURL(file)
+    );
 
-  const [currentImage, setCurrentImage] = useState(0);
+    if (imageUrls.length > 6 || imageUrls.length < 1) {
+      setImageUploadError("You can upload a maximum of six images.");
+      return;
+    }
 
+    setPics(imageUrls);
+    setImageUploadError("");
+  };
   const nextImage = () => {
     setCurrentImage((prevImage) => (prevImage + 1) % pics.length);
   };
@@ -73,12 +81,12 @@ const CreateListing = () => {
         <h1 className="text-3xl mt-16 my-7 text-center font-semibold">
           Create a Listing
         </h1>
-        <div className=" m-auto w-2/4 h-96 flex p-2">
+        <div className="border -2 border-slate-400 m-auto w-2/4 h-96 flex p-2">
           <button onClick={prevImage}>&lt; Prev</button>
           <img
             src={pics[currentImage]}
             alt={`Slide ${currentImage + 1}`}
-            className="w-96 h-full rounded"
+            className=" w-96 h-full rounded"
           />
           <button onClick={nextImage}>Next &gt;</button>
         </div>
@@ -228,13 +236,28 @@ const CreateListing = () => {
                 multiple
                 onChange={(e) => setProductPhotos(e.target.files)}
               />
-              <button className="p-3 text-green-700 border border-green-700 rounded uppercase hover:shadow-lg disabled:opacity-80">
+              <button
+                type="button"
+                className="p-3 text-green-700 border border-green-700 rounded uppercase hover:shadow-lg disabled:opacity-80"
+                onClick={handleUploadImages}
+              >
                 Upload
               </button>
             </div>
+            <p className="text-red-600">{uploadError}</p>
             <button className="p-3 bg-slate-700 text-white rounded-lg uppercase hover:opacity-95 disabled:opacity-80">
               {isloading ? "loading....." : "Create listing"}
             </button>
+            {/* <div className="border-2 border-red-500 flex justify-center flex-wrap">
+              {pics.map((item) => (
+                <img
+                  key={item}
+                  src={item}
+                  alt="images"
+                  className="w-36 h-44 m-2"
+                />
+              ))}
+            </div> */}
           </div>
         </form>
       </main>
