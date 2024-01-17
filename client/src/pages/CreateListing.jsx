@@ -1,81 +1,32 @@
 import { useState } from "react";
-import { useSelector } from "react-redux";
 
 const CreateListing = () => {
-  const { currentUser } = useSelector((state) => state.user);
+  const [inputProductValues, setInputProductValues] = useState({});
   const [productPhotos, setProductPhotos] = useState([]);
   const [isloading, setIsLoading] = useState(false);
   const [pics, setPics] = useState([]);
   const [currentImage, setCurrentImage] = useState(0);
   const [uploadError, setImageUploadError] = useState("");
-  const [isError, setError] = useState("");
-  const [formData, setFormData] = useState({
-    name: "",
-    description: "",
-    address: "",
-    type: "rent",
-    bedrooms: 1,
-    bathrooms: 1,
-    regularPrice: 50,
-    discountPrice: 0,
-    offer: false,
-    parking: false,
-    furnished: false,
-  });
   const handleChangeProduct = (e) => {
-    if (e.target.id === "sale" || e.target.id === "rent") {
-      setFormData({
-        ...formData,
-        type: e.target.id,
-      });
-    }
-
-    if (
-      e.target.id === "parking" ||
-      e.target.id === "furnished" ||
-      e.target.id === "offer"
-    ) {
-      setFormData({
-        ...formData,
-        [e.target.id]: e.target.checked,
-      });
-    }
-
-    if (
-      e.target.type === "number" ||
-      e.target.type === "text" ||
-      e.target.type === "textarea"
-    ) {
-      setFormData({
-        ...formData,
-        [e.target.id]: e.target.value,
-      });
-    }
+    setInputProductValues({
+      ...inputProductValues,
+      [e.target.id]: e.target.value,
+    });
   };
 
-  console.log(formData, "product values");
+  console.log(inputProductValues, "data in product values");
   const handleCreateProduct = async (e) => {
     e.preventDefault();
 
     try {
-      if (productPhotos.length < 1)
-        return setError("You must upload at least one image");
-      if (+formData.regularPrice < +formData.discountPrice)
-        return setError("Discount price must be lower than regular price");
-      setError(false);
       const productForm = new FormData();
-      productForm.append("name", formData.name);
-      productForm.append("description", formData.description);
-      productForm.append("address", formData.address);
-      productForm.append("regularPrice", formData.regularPrice);
-      productForm.append("discountPrice", formData.discountPrice);
-      productForm.append("bedrooms", formData.bedrooms);
-      productForm.append("bathrooms", formData.bathrooms);
-      productForm.append("type", formData.type);
-      productForm.append("furnished", formData.furnished);
-      productForm.append("parking", formData.parking);
-      productForm.append("offer", formData.offer);
-      productForm.append("userRef", currentUser._id);
+      productForm.append("name", inputProductValues.name);
+      productForm.append("description", inputProductValues.description);
+      productForm.append("address", inputProductValues.address);
+      productForm.append("regularPrice", inputProductValues.regularPrice);
+      productForm.append("discountPrice", inputProductValues.discountPrice);
+      productForm.append("bedrooms", inputProductValues.bedrooms);
+      productForm.append("bathrooms", inputProductValues.bathrooms);
       for (let i = 0; i < productPhotos.length; i++) {
         productForm.append("pictures", productPhotos[i]);
         console.log(productPhotos[i]);
@@ -92,13 +43,13 @@ const CreateListing = () => {
       const data = await res.json();
       console.log(data, "value in data product");
       if (data.success === false) {
-        setError(data.message);
+        alert("Failed to create product");
         return;
       }
-      alert(data.message);
+      alert("Product created successfully");
       return;
     } catch (error) {
-      setError(error.message);
+      console.log(error);
       setIsLoading(false);
     }
   };
@@ -116,16 +67,10 @@ const CreateListing = () => {
     setImageUploadError("");
   };
   const nextImage = () => {
-    if (pics.length === 1) {
-      return alert("please enter more than one image to move left or right");
-    }
     setCurrentImage((prevImage) => (prevImage + 1) % pics.length);
   };
 
   const prevImage = () => {
-    if (pics.length === 1) {
-      return alert("please enter more than one image to move left or right");
-    }
     setCurrentImage((prevImage) =>
       prevImage === 0 ? pics.length - 1 : prevImage - 1
     );
@@ -136,28 +81,15 @@ const CreateListing = () => {
         <h1 className="text-3xl mt-16 my-7 text-center font-semibold">
           Create a Listing
         </h1>
-        {pics && pics.length > 0 ? (
-          <div className="w-3/4 m-auto flex items-center">
-            <button
-              onClick={prevImage}
-              className=" back-btn  w-6 h-6 bg-green-400"
-            ></button>
-            <div className="  border-slate-400 m-auto w-2/4 h-96 flex p-2">
-              <img
-                src={pics[currentImage]}
-                alt={`Slide ${currentImage + 1}`}
-                className=" w-96 h-full rounded"
-              />
-            </div>
-            <button
-              onClick={nextImage}
-              className="next-btn  w-6 h-6 bg-green-400"
-            ></button>
-          </div>
-        ) : (
-          ""
-        )}
-
+        <div className="border -2 border-slate-400 m-auto w-2/4 h-96 flex p-2">
+          <button onClick={prevImage}>&lt; Prev</button>
+          <img
+            src={pics[currentImage]}
+            alt={`Slide ${currentImage + 1}`}
+            className=" w-96 h-full rounded"
+          />
+          <button onClick={nextImage}>Next &gt;</button>
+        </div>
         <form
           className="flex flex-col sm:flex-row gap-4"
           onSubmit={handleCreateProduct}
@@ -172,16 +104,14 @@ const CreateListing = () => {
               minLength="10"
               required
               onChange={handleChangeProduct}
-              value={formData.name}
             />
-            <textarea
+            <input
               type="text"
               placeholder="Description"
               className="border p-3 rounded-lg "
               id="description"
               required
               onChange={handleChangeProduct}
-              value={formData.description}
             />
             <input
               type="text"
@@ -190,7 +120,6 @@ const CreateListing = () => {
               id="address"
               required
               onChange={handleChangeProduct}
-              value={formData.address}
             />
             <div className="flex gap-6 flex-wrap">
               <div className="flex gap-2">
@@ -199,7 +128,6 @@ const CreateListing = () => {
                   id="sale"
                   className="w-5"
                   onChange={handleChangeProduct}
-                  checked={formData.type === "sale"}
                 />
                 <span>Sell</span>
               </div>
@@ -209,7 +137,6 @@ const CreateListing = () => {
                   id="rent"
                   className="w-5"
                   onChange={handleChangeProduct}
-                  checked={formData.type === "rent"}
                 />
                 <span>Rent</span>
               </div>
@@ -219,7 +146,6 @@ const CreateListing = () => {
                   id="parking"
                   className="w-5"
                   onChange={handleChangeProduct}
-                  checked={formData.parking}
                 />
                 <span>Parking Spot</span>
               </div>
@@ -229,7 +155,6 @@ const CreateListing = () => {
                   id="furnished"
                   className="w-5"
                   onChange={handleChangeProduct}
-                  checked={formData.furnished}
                 />
                 <span>Furnished</span>
               </div>
@@ -239,7 +164,6 @@ const CreateListing = () => {
                   id="offer"
                   className="w-5"
                   onChange={handleChangeProduct}
-                  checked={formData.offer}
                 />
                 <span>Offer</span>
               </div>
@@ -254,7 +178,6 @@ const CreateListing = () => {
                   max="10"
                   required
                   onChange={handleChangeProduct}
-                  value={formData.bedrooms}
                 />
                 <p>Beds</p>
                 <input
@@ -265,7 +188,6 @@ const CreateListing = () => {
                   max="10"
                   required
                   onChange={handleChangeProduct}
-                  value={formData.bathrooms}
                 />
                 <p>Baths</p>
               </div>
@@ -275,38 +197,26 @@ const CreateListing = () => {
                   type="number"
                   id="regularPrice"
                   required
-                  min="50"
-                  max="10000000"
                   onChange={handleChangeProduct}
-                  value={formData.regularPrice}
                 />
                 <div className="flex flex-col items-center">
                   <p>Regular price</p>
-                  {formData.type === "rent" && (
-                    <span className="text-xs">($ / month)</span>
-                  )}
+                  <span className="text-xs">{"$ / Month"}</span>
                 </div>
               </div>
-              {formData.offer && (
-                <div className="flex items-center gap-2">
-                  <input
-                    className="p-3 border border-gray-300 rounded-lg"
-                    type="number"
-                    id="discountPrice"
-                    min="50"
-                    max="10000000"
-                    required
-                    onChange={handleChangeProduct}
-                    value={formData.discountPrice}
-                  />
-                  <div className="flex flex-col items-center">
-                    <p>Discounted Price</p>
-                    {formData.type === "rent" && (
-                      <span className="text-xs">($ / month)</span>
-                    )}
-                  </div>
+              <div className="flex items-center gap-2">
+                <input
+                  className="p-3 border border-gray-300 rounded-lg"
+                  type="number"
+                  id="discountPrice"
+                  required
+                  onChange={handleChangeProduct}
+                />
+                <div className="flex flex-col items-center">
+                  <p>Discounted Price</p>
+                  <span className="text-xs">{"$ / Month"}</span>
                 </div>
-              )}
+              </div>
             </div>
           </div>
           <div className="flex flex-col flex-1 gap-4">
@@ -348,7 +258,6 @@ const CreateListing = () => {
                 />
               ))}
             </div> */}
-            {isError && <p className="text-red-700 text-sm">{isError}</p>}
           </div>
         </form>
       </main>
