@@ -1,8 +1,9 @@
 import { useState } from "react";
 import { useSelector } from "react-redux";
-
+import { useNavigate } from "react-router-dom";
 const CreateListing = () => {
   const { currentUser } = useSelector((state) => state.user);
+  const navigate = useNavigate();
   const [productPhotos, setProductPhotos] = useState([]);
   const [isloading, setIsLoading] = useState(false);
   const [pics, setPics] = useState([]);
@@ -95,6 +96,8 @@ const CreateListing = () => {
         setError(data.message);
         return;
       }
+      console.log(data, "val in data--------");
+      navigate(`listing/${data.listing._id}`);
       alert(data.message);
       return;
     } catch (error) {
