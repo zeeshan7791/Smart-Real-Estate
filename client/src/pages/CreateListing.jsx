@@ -99,6 +99,7 @@ const CreateListing = () => {
       console.log(data, "val in data--------");
       // navigate(`listing/${data.listing._id}`);
       navigate(`/`);
+
       alert(data.message);
       return;
     } catch (error) {
