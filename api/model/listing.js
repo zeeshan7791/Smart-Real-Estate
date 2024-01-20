@@ -44,7 +44,6 @@ const listingSchema = new mongoose.Schema(
     },
     offer: {
       type: Boolean,
-      required: true,
     },
     pictures: {
       type: Array,
