@@ -12,9 +12,14 @@ import {
   signoutUserSuccess,
 } from "../redux/user/userSlice";
 import { Link } from "react-router-dom";
+import { imagePoint } from "../config/imageLink";
 const Profile = () => {
   const { currentUser, loading, error } = useSelector((state) => state.user);
+  const { isLoading, isError, myListings } = useSelector(
+    (state) => state.myListing
+  );
   const [updateValue, setUpdateData] = useState({});
+  const [listings, setListings] = useState([]);
   const [update, setUpdate] = useState(false);
   const [photo, setPhoto] = useState(null);
   const dispatch = useDispatch();
@@ -93,7 +98,17 @@ const Profile = () => {
       dispatch(deleteUserFailure(error.message));
     }
   };
+  // console.log(myListings, "value in my Listing0000000000000000");
+  const handleShowListing = async () => {
+    try {
+      const data = await myListings.userListing;
 
+      setListings(data);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+  console.log(listings, "va---------");
   return (
     <>
       <div className="p-3 max-w-lg mx-auto">
@@ -186,6 +201,47 @@ const Profile = () => {
         <p className="text-green-700 mt-5">
           {update ? "user updated Successfully!" : ""}
         </p>
+        <button onClick={handleShowListing} className="text-green-700 w-full">
+          Show Listing
+        </button>
+        {isError && <p className="text-red-700 mt-5">{isError}</p>}
+        {isLoading ? (
+          <p className="text-5xl font-bold">Loading...</p>
+        ) : (
+          listings &&
+          listings.length > 0 &&
+          listings.map((listing) => (
+            <>
+              <div className="flex flex-col gap-4">
+                <h1 className="text-center mt-7 text-2xl font-semibold">
+                  Your Listings
+                </h1>
+                <div
+                  key={listing._id}
+                  className="flex border rounded-lg p-3 justify-between items-center gap-4"
+                >
+                  <Link to={`listing/${listing._id}`}>
+                    <img
+                      src={imagePoint + listing.pictures[0]}
+                      alt="listing"
+                      className="w-16 h-16 object-contain "
+                    />
+                  </Link>
+                  <Link
+                    className="text-slate-700 font-semibold flex-1 hover:underline truncate"
+                    to={`listing/${listing._id}`}
+                  >
+                    <p>{listing.name}</p>
+                  </Link>
+                  <div className="flex flex-col items-center">
+                    <button className="text-red-700 uppercase">Delete</button>
+                    <button className="text-green-700 uppercase">Edit</button>
+                  </div>
+                </div>
+              </div>
+            </>
+          ))
+        )}
       </div>
     </>
   );
