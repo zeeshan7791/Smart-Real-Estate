@@ -4,10 +4,12 @@ import { persistReducer } from "redux-persist";
 import storage from "redux-persist/lib/storage";
 import persistStore from "redux-persist/es/persistStore";
 import listingSlice from "./listing/listingSlice";
+import myListingSlice from "./listing/myListingSlice";
 
 const rootReducer = combineReducers({
   user: userReducer,
   listings: listingSlice,
+  myListing: myListingSlice,
 });
 const persistConfig = {
   key: "root",
