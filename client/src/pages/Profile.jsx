@@ -13,11 +13,11 @@ import {
 } from "../redux/user/userSlice";
 import { Link } from "react-router-dom";
 import { imagePoint } from "../config/imageLink";
+import { myListingActions } from "../redux/listing/myListingSlice";
 const Profile = () => {
   const { currentUser, loading, error } = useSelector((state) => state.user);
-  const { isLoading, isError, myListings } = useSelector(
-    (state) => state.myListing
-  );
+  const { isLoading, isError } = useSelector((state) => state.myListing);
+  console.log(isError);
   const [updateValue, setUpdateData] = useState({});
   const [listings, setListings] = useState([]);
   const [update, setUpdate] = useState(false);
@@ -99,16 +99,48 @@ const Profile = () => {
     }
   };
   // console.log(myListings, "value in my Listing0000000000000000");
+
+  const userRef = currentUser._id;
+
   const handleShowListing = async () => {
     try {
-      const data = await myListings.userListing;
+      // dispatch(myListingActions.getMyListingStart());
+      const res = await fetch("http://localhost:3000/api/listing/my-listing", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ userRef }),
+      });
+      const data = await res.json();
 
-      setListings(data);
+      setListings(data.userListing);
+      if (data.success === false) {
+        dispatch(myListingActions.getMyListingFailure(data.message));
+        return;
+      }
+      dispatch(myListingActions.getMyListingSuccess(data));
     } catch (error) {
-      console.log(error);
+      dispatch(myListingActions.getMyListingFailure(error.message));
     }
   };
-  console.log(listings, "va---------");
+  const handleDeleteListing = async (listingId) => {
+    console.log(listingId, "dleete listing id-------");
+    try {
+      const res = await fetch(`/api/listing/delete/${listingId}`, {
+        method: "DELETE",
+      });
+      const data = await res.json();
+      if (data.success == false) {
+        return alert(data.message);
+      }
+      setListings((prev) => prev.filter((listing) => listing._id != listingId));
+      alert(data.message);
+    } catch (error) {
+      alert(error.message);
+    }
+  };
+
   return (
     <>
       <div className="p-3 max-w-lg mx-auto">
@@ -205,6 +237,9 @@ const Profile = () => {
           Show Listing
         </button>
         {isError && <p className="text-red-700 mt-5">{isError}</p>}
+        <h1 className="text-center mt-7 text-2xl font-semibold">
+          Your Listings
+        </h1>
         {isLoading ? (
           <p className="text-5xl font-bold">Loading...</p>
         ) : (
@@ -213,9 +248,6 @@ const Profile = () => {
           listings.map((listing) => (
             <>
               <div className="flex flex-col gap-4">
-                <h1 className="text-center mt-7 text-2xl font-semibold">
-                  Your Listings
-                </h1>
                 <div
                   key={listing._id}
                   className="flex border rounded-lg p-3 justify-between items-center gap-4"
@@ -234,7 +266,12 @@ const Profile = () => {
                     <p>{listing.name}</p>
                   </Link>
                   <div className="flex flex-col items-center">
-                    <button className="text-red-700 uppercase">Delete</button>
+                    <button
+                      onClick={() => handleDeleteListing(listing._id)}
+                      className="text-red-700 uppercase"
+                    >
+                      Delete
+                    </button>
                     <button className="text-green-700 uppercase">Edit</button>
                   </div>
                 </div>
