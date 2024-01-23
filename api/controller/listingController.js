@@ -146,13 +146,11 @@ const updateListing = async (req, res, next) => {
       req.body,
       { new: true }
     );
-    return res
-      .status(200)
-      .json({
-        success: true,
-        message: "listing Updated Successfully",
-        updatedListing,
-      });
+    return res.status(200).json({
+      success: true,
+      message: "listing Updated Successfully",
+      updatedListing,
+    });
   } catch (error) {
     next(error);
   }
@@ -181,10 +179,28 @@ const deleteListing = async (req, res, next) => {
   }
 };
 
+const getSingleListing = async (req, res, next) => {
+  try {
+    const singleListing = await Listing.findOne({ _id: req.params.id });
+    console.log(singleListing, "value in listing");
+
+    if (!singleListing) {
+      return next(errorHandler(404, "Listing not found"));
+    }
+    return res.status(200).json({
+      success: true,
+      message: "Listing fetched successfully",
+      singleListing,
+    });
+  } catch (error) {
+    return next(error);
+  }
+};
 module.exports = {
   createListing,
   getListing,
   getMyListings,
   deleteListing,
   updateListing,
+  getSingleListing,
 };

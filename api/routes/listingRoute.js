@@ -4,6 +4,7 @@ const {
   getMyListings,
   deleteListing,
   updateListing,
+  getSingleListing,
 } = require("../controller/listingController");
 const router = express.Router();
 const upload = require("../middleware/upload");
@@ -18,5 +19,6 @@ router.post(
 router.post("/my-listing", getMyListings);
 router.delete("/delete/:id", verifyToken, deleteListing);
 router.post("/update/:id", verifyToken, updateListing);
+router.get("/getListing/:id", getSingleListing);
 
 module.exports = router;
