@@ -1,7 +1,7 @@
-const listing = require("../model/listing");
-const Listing = require("../model/listing");
 const errorHandler = require("../utils/error");
-
+const Listing = require("../model/listing");
+const mongoose = require("mongoose");
+const { ObjectId } = require("mongodb");
 const createListing = async (req, res, next) => {
   try {
     const { name, description, address } = req.body;
@@ -60,28 +60,104 @@ const getMyListings = async (req, res, next) => {
     next(error);
   }
 };
-const updateListing = async (req, res, next) => {
-  try {
-    const {
-      name,
-      description,
-      address,
-      regularPrice,
-      discountPrice,
-      bedrooms,
-      bathrooms,
-      furnished,
-      parking,
-      type,
-      offer,
-      userRef,
-    } = req.body;
+// const updateListing = async (req, res, next) => {
+//   console.log("hello");
+//   const listing = await Listing.findById({ _id: req.params.id });
+//   if (!listing) {
+//     return next(errorHandler(404, "Listing not found"));
+//   }
+//   if (req.user.id !== req.params.id) {
+//     return next(errorHandler(401, "You can only update your own account!"));
+//   }
 
-    const updatelistings = await Listing.findByIdAndUpdate();
+//   try {
+//     // const {
+//     //   name,
+//     //   description,
+//     //   address,
+//     //   regularPrice,
+//     //   discountPrice,
+//     //   bedrooms,
+//     //   bathrooms,
+//     //   furnished,
+//     //   parking,
+//     //   type,
+//     //   offer,
+//     //   userRef,
+//     // } = req.body;
+//     // let pics = [];
+
+//     // req.files.map((item) => {
+//     //   pics.push(item.filename);
+//     // });
+//     // if (pics.length != 0) {
+//     //   req.body.pictures = pics;
+//     // }
+
+//     let updateUserListing = {
+//       name: req.body.name,
+//       description: req.body.description,
+//       address: req.body.address,
+//       regularPrice: req.body.regularPrice,
+//       discountPrice: req.body.discountPrice,
+//       bedrooms: req.body.bedrooms,
+//       bathrooms: req.body.bathrooms,
+//       furnished: req.body.furnished,
+//       parking: req.body.parking,
+//       type: req.body.type,
+//       offer: req.body.offer,
+//       userRef: req.body.userRef,
+//     };
+//     const updatedlisting = await Listing.findByIdAndUpdate(
+//       req.params.id,
+//       {
+//         $set: updateUserListing,
+//       },
+//       { new: true }
+//     );
+//     return res.status(201).json({
+//       success: true,
+//       message: "User listing updated successfully",
+//       updatedlisting,
+//     });
+//   } catch (error) {
+//     next(error);
+//   }
+// };
+const updateListing = async (req, res, next) => {
+  const listing = await Listing.findById(req.params.id);
+  console.log(listing, "value in listing----");
+  if (req.user.id !== listing.userRef) {
+    return next(errorHandler(401, "You can only update your own listings!"));
+  }
+  console.log(req.body);
+
+  try {
+    let pics = [];
+    req.files.map((item) => {
+      pics.push(item.filename);
+    });
+    console.log(pics, "value in pics-------");
+    if (pics.length !== 0) {
+      req.body.pictures = pics;
+    }
+    const updatedListing = await Listing.findByIdAndUpdate(
+      req.params.id,
+      req.body,
+      { new: true }
+    );
+    return res
+      .status(200)
+      .json({
+        success: true,
+        message: "listing Updated Successfully",
+        updatedListing,
+      });
   } catch (error) {
     next(error);
   }
 };
+
 const deleteListing = async (req, res, next) => {
   console.log(req.params.id, "value in listing");
   const findListing = await Listing.findById({ _id: req.params.id });
@@ -90,10 +166,9 @@ const deleteListing = async (req, res, next) => {
   if (!findListing) {
     return next(errorHandler(404, "Listing not found"));
   }
-
-  // if (req.user.id !== findListing.userRef.toString()) {
-  //   return next(errorHandler(401, "You can only delete your own listing!"));
-  // }
+  if (req.user.id !== findListing.userRef) {
+    return next(errorHandler(401, "You can only delete your own listing!"));
+  }
 
   try {
     await Listing.findByIdAndDelete(req.params.id);
@@ -111,4 +186,5 @@ module.exports = {
   getListing,
   getMyListings,
   deleteListing,
+  updateListing,
 };
