@@ -1,3 +1,4 @@
+const listing = require("../model/listing");
 const Listing = require("../model/listing");
 const errorHandler = require("../utils/error");
 
@@ -33,7 +34,7 @@ const getListing = async (req, res, next) => {
   try {
     const getProductListing = await Listing.find();
     // console.log(getProductListing);
-    res.status(200).json({
+    return res.status(200).json({
       success: true,
       message: "listing get successfully",
       getProductListing,
@@ -48,9 +49,9 @@ const getMyListings = async (req, res, next) => {
     // console.log(req.body, "value in body");
     const { userRef } = req.body;
     console.log(userRef);
-    const userListing = await Listing.find({ userRef });
+    const userListing = await Listing.find({ userRef: userRef });
     console.log(userListing, "value in listing--------------");
-    res.status(200).json({
+    return res.status(200).json({
       success: true,
       message: "user listing fetched successfully",
       userListing,
@@ -81,8 +82,33 @@ const updateListing = async (req, res, next) => {
     next(error);
   }
 };
+const deleteListing = async (req, res, next) => {
+  console.log(req.params.id, "value in listing");
+  const findListing = await Listing.findById({ _id: req.params.id });
+  console.log(findListing, "value in listing");
+
+  if (!findListing) {
+    return next(errorHandler(404, "Listing not found"));
+  }
+
+  // if (req.user.id !== findListing.userRef.toString()) {
+  //   return next(errorHandler(401, "You can only delete your own listing!"));
+  // }
+
+  try {
+    await Listing.findByIdAndDelete(req.params.id);
+    return res.status(200).json({
+      success: true,
+      message: "Listing deleted successfully",
+    });
+  } catch (error) {
+    return next(error);
+  }
+};
+
 module.exports = {
   createListing,
   getListing,
   getMyListings,
+  deleteListing,
 };
