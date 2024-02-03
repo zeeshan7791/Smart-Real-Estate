@@ -1,11 +1,14 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
+import { imagePoint } from "../config/imageLink";
 import { toast } from "react-toastify";
-const CreateListing = () => {
+
+const UpdateListing = () => {
   const { currentUser } = useSelector((state) => state.user);
   const navigate = useNavigate();
   const [productPhotos, setProductPhotos] = useState([]);
+  const [pictures, setPictures] = useState([]);
   const [isloading, setIsLoading] = useState(false);
   const [pics, setPics] = useState([]);
   const [currentImage, setCurrentImage] = useState(0);
@@ -24,6 +27,31 @@ const CreateListing = () => {
     parking: false,
     furnished: false,
   });
+  const params = useParams();
+  const listingId = params.listingId;
+  // console.log(listingId, "listingid--------");
+  useEffect(() => {
+    const fetchListing = async () => {
+      try {
+        const res = await fetch(`/api/listing/getListing/${listingId}`);
+
+        const data = await res.json();
+        if (data.success === false) {
+          // console.log(data.message);
+          toast.error(data.message);
+          return;
+        }
+        // console.log(data, "value here.......");
+        setFormData(data);
+        setPictures(data.pictures);
+        toast.success(data.message);
+      } catch (error) {
+        toast.error(error);
+      }
+    };
+    fetchListing();
+  }, [listingId]);
+
   const handleChangeProduct = (e) => {
     if (e.target.id === "sale" || e.target.id === "rent") {
       setFormData({
@@ -55,13 +83,10 @@ const CreateListing = () => {
     }
   };
 
-  console.log(formData, "product values");
-  const handleCreateProduct = async (e) => {
+  const handleUpdateProduct = async (e) => {
     e.preventDefault();
 
     try {
-      if (productPhotos.length < 1)
-        return setError("You must upload at least one image");
       if (+formData.regularPrice < +formData.discountPrice)
         return setError("Discount price must be lower than regular price");
       setError(false);
@@ -80,14 +105,12 @@ const CreateListing = () => {
       productForm.append("userRef", currentUser._id);
       for (let i = 0; i < productPhotos.length; i++) {
         productForm.append("pictures", productPhotos[i]);
-        console.log(productPhotos[i]);
+        // console.log(productPhotos[i]);
       }
       setIsLoading(true);
-      const res = await fetch("/api/listing/create-listing", {
+      const res = await fetch(`/api/listing/update/${listingId}`, {
         method: "POST",
-        // headers: {
-        //   "Content-Type": "application/json",
-        // },
+
         body: productForm,
       });
       setIsLoading(false);
@@ -95,20 +118,29 @@ const CreateListing = () => {
       // console.log(data, "value in data product");
       if (data.success === false) {
         setError(data.message);
+        toast.error(data.message);
         return;
       }
       // console.log(data, "val in data--------");
       // navigate(`listing/${data.listing._id}`);
-      toast.success(data.message);
-      navigate(`/my-listing`);
+      navigate(`/profile`);
 
+      toast.success(data.message);
       return;
     } catch (error) {
-      setError(error);
-      setIsLoading(false);
+      setError(error.message);
       toast.error(error);
+      setIsLoading(false);
     }
   };
+  // if (formData.pictures.length > 0 && productPhotos.length === 0) {
+  //   const images = Array.from(formData.pictures).map(
+  //     (file) => imagePoint + file
+  //   );
+  //   console.log(images, "val in imaaaaaaaaaaaa");
+  //   pics.push(images);
+  // }
+
   const handleUploadImages = () => {
     const imageUrls = Array.from(productPhotos).map((file) =>
       URL.createObjectURL(file)
@@ -138,11 +170,27 @@ const CreateListing = () => {
       prevImage === 0 ? pics.length - 1 : prevImage - 1
     );
   };
+  const nextEditImage = () => {
+    if (pictures.length === 1) {
+      return alert("please enter more than one image to move left or right");
+    }
+    setCurrentImage((prevImage) => (prevImage + 1) % pictures.length);
+  };
+
+  const prevEditImage = () => {
+    if (pictures.length === 1) {
+      return alert("please enter more than one image to move left or right");
+    }
+    setCurrentImage((prevImage) =>
+      prevImage === 0 ? pictures.length - 1 : prevImage - 1
+    );
+  };
+
   return (
     <>
       <main className="p-3 max-w-4xl mx-auto">
         <h1 className="text-3xl mt-16 my-7 text-center font-semibold">
-          Create a Listing
+          Update a Listing
         </h1>
         {pics && pics.length > 0 ? (
           <div className="w-3/4 m-auto flex items-center">
@@ -163,12 +211,28 @@ const CreateListing = () => {
             ></button>
           </div>
         ) : (
-          ""
+          <div className="w-3/4 m-auto flex items-center">
+            <button
+              onClick={prevEditImage}
+              className=" back-btn  w-6 h-6 bg-green-400"
+            ></button>
+            <div className="  border-slate-400 m-auto w-2/4 h-96 flex p-2">
+              <img
+                src={imagePoint + pictures[currentImage]}
+                alt={`Slide ${currentImage + 1}`}
+                className=" w-96 h-full rounded"
+              />
+            </div>
+            <button
+              onClick={nextEditImage}
+              className="next-btn  w-6 h-6 bg-green-400"
+            ></button>
+          </div>
         )}
 
         <form
           className="flex flex-col sm:flex-row gap-4"
-          onSubmit={handleCreateProduct}
+          onSubmit={handleUpdateProduct}
         >
           <div className="flex flex-col gap-4 flex-1">
             <input
@@ -344,7 +408,7 @@ const CreateListing = () => {
             </div>
             <p className="text-red-600">{uploadError}</p>
             <button className="p-3 bg-slate-700 text-white rounded-lg uppercase hover:opacity-95 disabled:opacity-80">
-              {isloading ? "loading....." : "Create listing"}
+              {isloading ? "loading....." : "update listing"}
             </button>
             {/* <div className="border-2 border-red-500 flex justify-center flex-wrap">
               {pics.map((item) => (
@@ -364,4 +428,4 @@ const CreateListing = () => {
   );
 };
 
-export default CreateListing;
+export default UpdateListing;

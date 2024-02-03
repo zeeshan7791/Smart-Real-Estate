@@ -2,18 +2,18 @@ import { createSlice } from "@reduxjs/toolkit";
 
 const myListingSlice = createSlice({
   name: "myListing",
-  initialState: { myListings: null, error: null, loading: false },
+  initialState: { myListings: null, isError: null, isLoading: false },
   reducers: {
     getMyListingStart: (state) => {
-      state.loading = true;
+      state.isLoading = true;
     },
     getMyListingSuccess: (state, action) => {
       state.myListings = action.payload;
-      state.error = null;
-      state.loading = false;
+      state.isError = null;
+      state.isLoading = false;
     },
     getMyListingFailure: (state, action) => {
-      (state.error = action.payload), (state.loading = null);
+      (state.isError = action.payload), (state.isLoading = null);
     },
   },
 });
