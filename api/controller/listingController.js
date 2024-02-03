@@ -130,17 +130,19 @@ const updateListing = async (req, res, next) => {
   if (req.user.id !== listing.userRef) {
     return next(errorHandler(401, "You can only update your own listings!"));
   }
-  console.log(req.body);
 
   try {
     let pics = [];
-    req.files.map((item) => {
-      pics.push(item.filename);
-    });
+    if (req.files) {
+      req.files.map((item) => {
+        pics.push(item.filename);
+      });
+    }
     console.log(pics, "value in pics-------");
     if (pics.length !== 0) {
       req.body.pictures = pics;
     }
+
     const updatedListing = await Listing.findByIdAndUpdate(
       req.params.id,
       req.body,
@@ -181,17 +183,13 @@ const deleteListing = async (req, res, next) => {
 
 const getSingleListing = async (req, res, next) => {
   try {
-    const singleListing = await Listing.findOne({ _id: req.params.id });
-    console.log(singleListing, "value in listing");
+    const listing = await Listing.findOne({ _id: req.params.id });
+    console.log(listing, "value in listing");
 
-    if (!singleListing) {
+    if (!listing) {
       return next(errorHandler(404, "Listing not found"));
     }
-    return res.status(200).json({
-      success: true,
-      message: "Listing fetched successfully",
-      singleListing,
-    });
+    return res.status(200).json(listing);
   } catch (error) {
     return next(error);
   }

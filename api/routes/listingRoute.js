@@ -12,13 +12,18 @@ const { verifyToken } = require("../utils/verifyUser");
 
 router.post(
   "/create-listing",
-  verifyToken,
+
   upload.array("pictures"),
   createListing
 );
 router.post("/my-listing", getMyListings);
 router.delete("/delete/:id", verifyToken, deleteListing);
-router.post("/update/:id", verifyToken, updateListing);
+router.post(
+  "/update/:id",
+  upload.array("pictures"),
+  verifyToken,
+  updateListing
+);
 router.get("/getListing/:id", getSingleListing);
 
 module.exports = router;
