@@ -1,8 +1,21 @@
 const errorHandler = require("../utils/error");
 const bcryptjs = require("bcryptjs");
 const User = require("../model/user");
-const getUser = async (req, res) => {
-  res.send("hey how are you");
+const getUser = async (req, res, next) => {
+  try {
+    const user = await User.findById(req.params.id);
+    if (!user) {
+      return next(errorHandler(404, "user not found"));
+    }
+    const { password: pass, ...rest } = user._doc;
+    res.status(200).json({
+      success: true,
+      message: "user fetched Successfully",
+      rest,
+    });
+  } catch (error) {
+    next(error);
+  }
 };
 const updateUser = async (req, res, next) => {
   console.log(req.body.password, "Password before ");
