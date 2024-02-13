@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
+import ListingItem from "../components/ListingItem";
 
 const Search = () => {
   const navigate = useNavigate();
@@ -16,7 +17,7 @@ const Search = () => {
 
   const [loading, setLoading] = useState(false);
   const [listings, setListings] = useState([]);
-  const [showMore, setShowMore] = useState(false);
+  //   const [showMore, setShowMore] = useState(false);
 
   useEffect(() => {
     const urlParams = new URLSearchParams(location.search);
@@ -53,7 +54,7 @@ const Search = () => {
         const searchQuery = urlParams.toString();
         const res = await fetch(`api/listing/get?${searchQuery}`);
         const data = await res.json();
-        setListings(data);
+        setListings(data.listings);
         setLoading(false);
       } catch (error) {
         toast.error(error);
@@ -226,15 +227,15 @@ const Search = () => {
               </p>
             )}
 
-            {/* {!loading &&
+            {!loading &&
               listings &&
               listings.map((listing) => (
                 <ListingItem key={listing._id} listing={listing} />
               ))}
 
-            {showMore && (
+            {/* {showMore && (
               <button
-                onClick={onShowMoreClick}
+                onClick={"onShowMoreClick"}
                 className="text-green-700 hover:underline p-7 text-center w-full"
               >
                 Show more
