@@ -24,13 +24,14 @@ app.use(cookieParser());
 app.use("/api/user", userRouter);
 app.use("/api/auth", authRouter);
 app.use("/api/listing", listingRouter);
+app.use("/image", express.static(path.join(__dirname, "uploads")));
 const clientDistPath = path.join(__dirname, "..", "client", "dist");
 app.use(express.static(clientDistPath));
 app.get("*", (req, res) => {
   res.sendFile(path.join(clientDistPath, "index.html"));
 });
 const PORT = process.env.PORT || 5000;
-app.use("/image", express.static(path.join(__dirname, "uploads")));
+
 app.listen(PORT, () => console.log(`Server started on port ${PORT}`));
 
 app.use((err, req, res, next) => {
