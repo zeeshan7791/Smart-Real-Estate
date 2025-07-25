@@ -3,7 +3,7 @@ import { MdLocationOn } from "react-icons/md";
 
 import PropTypes from "prop-types";
 export default function ListingItem({ listing }) {
-  const imagePoint = `http://localhost:3000/image/`
+  const imagePoint = `https://smart-real-estate-1.onrender.com/image/`
   return (
     <div className="bg-white shadow-md hover:shadow-lg transition-shadow overflow-hidden rounded-lg w-full sm:w-[330px]">
       <Link to={`/listing/${listing._id}`}>
