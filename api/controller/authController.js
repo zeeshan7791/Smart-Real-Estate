@@ -1,7 +1,7 @@
-const User = require("../model/user");
-const bcryptjs = require("bcryptjs");
-const errorHandler = require("../utils/error");
-const jwt = require("jsonwebtoken");
+import User from "../model/user.js";
+import bcryptjs from "bcryptjs";
+import errorHandler from "../utils/error.js";
+import jwt from "jsonwebtoken";
 const signUp = async (req, res, next) => {
   const { username, email, password, photo } = req.body;
   console.log(req.file);
