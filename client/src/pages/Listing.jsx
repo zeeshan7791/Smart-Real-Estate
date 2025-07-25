@@ -24,7 +24,7 @@ const Listing = () => {
   //   const [contact, setContact] = useState(false);
   const params = useParams();
   //   const { currentUser } = useSelector((state) => state.user);
-const imagePoint = `http://localhost:3000/image/`
+  const imagePoint = `https://smart-real-estate-1.onrender.com/image/`
   useEffect(() => {
     const fetchListing = async () => {
       try {
