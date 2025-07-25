@@ -161,7 +161,7 @@ const Profile = () => {
                 ) : (
                   <div className="text-center">
                     <img
-                      src={`http://localhost:3000/image/${currentUser.photo}`}
+                      src={`https://smart-real-estate-1.onrender.com/image/${currentUser.photo}`}
                       alt="product_photo"
                       className="w-16 h-16 rounded-full"
                     />
