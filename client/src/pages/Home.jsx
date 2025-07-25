@@ -7,7 +7,7 @@ import "swiper/css/bundle";
 import ListingItem from "../components/ListingItem";
 
 const Home = () => {
-  const imagePoint = `http://localhost:3000/image/`
+  const imagePoint = `https://smart-real-estate-1.onrender.com/image/`
   const [offerListings, setOfferListings] = useState([]);
   const [saleListings, setSaleListings] = useState([]);
   const [rentListings, setRentListings] = useState([]);
