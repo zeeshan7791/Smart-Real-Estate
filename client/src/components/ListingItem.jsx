@@ -1,8 +1,9 @@
 import { Link } from "react-router-dom";
 import { MdLocationOn } from "react-icons/md";
-import { imagePoint } from "../config/imageLink.js";
+
 import PropTypes from "prop-types";
 export default function ListingItem({ listing }) {
+  const imagePoint = `http://localhost:3000/image/`
   return (
     <div className="bg-white shadow-md hover:shadow-lg transition-shadow overflow-hidden rounded-lg w-full sm:w-[330px]">
       <Link to={`/listing/${listing._id}`}>
