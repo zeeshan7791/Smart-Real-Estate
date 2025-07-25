@@ -5,8 +5,9 @@ import { Navigation } from "swiper/modules";
 import SwiperCore from "swiper";
 import "swiper/css/bundle";
 import ListingItem from "../components/ListingItem";
-import { imagePoint } from "../config/imageLink.js";
+
 const Home = () => {
+  const imagePoint = `http://localhost:3000/image/`
   const [offerListings, setOfferListings] = useState([]);
   const [saleListings, setSaleListings] = useState([]);
   const [rentListings, setRentListings] = useState([]);
