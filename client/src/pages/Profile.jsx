@@ -12,11 +12,12 @@ import {
   signoutUserSuccess,
 } from "../redux/user/userSlice";
 import { Link } from "react-router-dom";
-import { imagePoint } from "../config/imageLink.js";
+
 import { myListingActions } from "../redux/listing/myListingSlice";
 const Profile = () => {
   const { currentUser, loading, error } = useSelector((state) => state.user);
   const { isLoading, isError } = useSelector((state) => state.myListing);
+  const imagePoint = `http://localhost:3000/image/`
   console.log(isError);
   const [updateValue, setUpdateData] = useState({});
   const [listings, setListings] = useState([]);
