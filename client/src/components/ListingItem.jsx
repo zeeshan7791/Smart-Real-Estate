@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 import { MdLocationOn } from "react-icons/md";
-import { imagePoint } from "../config/imageLink";
+import { imagePoint } from "../config/imageLink.js";
 import PropTypes from "prop-types";
 export default function ListingItem({ listing }) {
   return (
