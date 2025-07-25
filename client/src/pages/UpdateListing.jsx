@@ -27,7 +27,7 @@ const UpdateListing = () => {
     parking: false,
     furnished: false,
   });
-  const imagePoint = `http://localhost:3000/image/`
+   const imagePoint = `https://smart-real-estate-1.onrender.com/image/`
   const params = useParams();
   const listingId = params.listingId;
   // console.log(listingId, "listingid--------");
