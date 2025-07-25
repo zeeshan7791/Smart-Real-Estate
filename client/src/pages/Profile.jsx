@@ -12,7 +12,7 @@ import {
   signoutUserSuccess,
 } from "../redux/user/userSlice";
 import { Link } from "react-router-dom";
-import { imagePoint } from "../config/imageLink";
+import { imagePoint } from "../config/imageLink.js";
 import { myListingActions } from "../redux/listing/myListingSlice";
 const Profile = () => {
   const { currentUser, loading, error } = useSelector((state) => state.user);
