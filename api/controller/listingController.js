@@ -1,7 +1,7 @@
-const errorHandler = require("../utils/error");
-const Listing = require("../model/listing");
-const mongoose = require("mongoose");
-const { ObjectId } = require("mongodb");
+import errorHandler from "../utils/error.js";
+import Listing from "../model/listing.js";
+import mongoose from "mongoose";
+import { ObjectId } from "mongodb";
 const createListing = async (req, res, next) => {
   try {
     const { name, description, address } = req.body;
@@ -237,7 +237,7 @@ const getListings = async (req, res, next) => {
     console.log(error);
   }
 };
-module.exports = {
+export {
   createListing,
   getListing,
   getMyListings,
