@@ -5,7 +5,7 @@ import SwiperCore from "swiper";
 // import { useSelector } from "react-redux";
 import { Navigation } from "swiper/modules";
 import "swiper/css/bundle";
-import { imagePoint } from "../config/imageLink.js";
+
 import {
   FaBath,
   FaBed,
@@ -24,7 +24,7 @@ const Listing = () => {
   //   const [contact, setContact] = useState(false);
   const params = useParams();
   //   const { currentUser } = useSelector((state) => state.user);
-
+const imagePoint = `http://localhost:3000/image/`
   useEffect(() => {
     const fetchListing = async () => {
       try {
