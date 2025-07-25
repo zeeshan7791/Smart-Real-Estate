@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { useNavigate, useParams } from "react-router-dom";
-import { imagePoint } from "../config/imageLink.js";
+
 import { toast } from "react-toastify";
 
 const UpdateListing = () => {
@@ -27,6 +27,7 @@ const UpdateListing = () => {
     parking: false,
     furnished: false,
   });
+  const imagePoint = `http://localhost:3000/image/`
   const params = useParams();
   const listingId = params.listingId;
   // console.log(listingId, "listingid--------");
