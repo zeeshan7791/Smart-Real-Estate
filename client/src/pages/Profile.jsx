@@ -17,7 +17,7 @@ import { myListingActions } from "../redux/listing/myListingSlice";
 const Profile = () => {
   const { currentUser, loading, error } = useSelector((state) => state.user);
   const { isLoading, isError } = useSelector((state) => state.myListing);
-  const imagePoint = `http://localhost:3000/image/`
+  const imagePoint = `https://smart-real-estate-1.onrender.com/image/`
   console.log(isError);
   const [updateValue, setUpdateData] = useState({});
   const [listings, setListings] = useState([]);
