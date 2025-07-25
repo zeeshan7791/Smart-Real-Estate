@@ -1,7 +1,7 @@
-const jwt = require("jsonwebtoken");
-const errorHandler = require("./error");
+import jwt from "jsonwebtoken";
+import errorHandler from "./error.js";
 
-const verifyToken = (req, res, next) => {
+export const verifyToken = (req, res, next) => {
   console.log("hello");
   const token = req.cookies.access_token;
   console.log(token);
@@ -14,7 +14,4 @@ const verifyToken = (req, res, next) => {
     req.user = user;
     next();
   });
-};
-module.exports = {
-  verifyToken,
 };
