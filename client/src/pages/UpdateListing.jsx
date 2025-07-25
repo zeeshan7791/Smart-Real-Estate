@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { useNavigate, useParams } from "react-router-dom";
-import { imagePoint } from "../config/imageLink";
+import { imagePoint } from "../config/imageLink.js";
 import { toast } from "react-toastify";
 
 const UpdateListing = () => {
