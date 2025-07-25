@@ -71,7 +71,7 @@ const signOut = async (req, res, next) => {
     next(error);
   }
 };
-module.exports = {
+export {
   signUp,
   signIn,
   signOut,
