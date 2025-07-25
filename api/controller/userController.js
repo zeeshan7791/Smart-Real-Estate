@@ -1,6 +1,6 @@
-const errorHandler = require("../utils/error");
-const bcryptjs = require("bcryptjs");
-const User = require("../model/user");
+import errorHandler from "../utils/error.js";
+import bcryptjs from "bcryptjs";
+import User from "../model/user.js";
 const getUser = async (req, res, next) => {
   try {
     const user = await User.findById(req.params.id);
@@ -64,7 +64,7 @@ const deleteUser = async (req, res, next) => {
     next(error);
   }
 };
-module.exports = {
+export {
   getUser,
   updateUser,
   deleteUser,
